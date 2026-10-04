@@ -8,3 +8,31 @@ model User {
   updatedAt temporal.updatedAtString()
 }
 
+model Project {
+  id             Int               @id @default(autoincrement())
+  userId         Int
+  user           User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name           String
+  repoUrl        String
+  branch         String            @default("main")
+  runtime        String            // "nodejs" | "python" | "custom"
+  runtimeVersion String?           // e.g. "18-alpine", "3.11-slim"
+  installCommand String?           // e.g. "npm install"
+  buildCommand   String?           // e.g. "npm run build"
+  startCommand   String            // e.g. "npm start"
+  port           Int               @default(3000)
+  createdAt      TimestamptzString @default(now())
+  updatedAt      temporal.updatedAtString()
+}
+
+model Deployment {
+  id             Int               @id @default(autoincrement())
+  projectId      Int
+  project        Project           @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  jenkinsBuildNo Int?
+  imageTag       String            // e.g. "relay-proj-1-build-1"
+  status         String            @default("QUEUED") // "QUEUED" | "BUILDING" | "SUCCESS" | "FAILED"
+  publicUrl      String?           // Wildcard DNS URL generated in Phase 3
+  createdAt      TimestamptzString @default(now())
+  updatedAt      temporal.updatedAtString()
+}

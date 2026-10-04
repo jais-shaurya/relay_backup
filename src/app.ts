@@ -8,6 +8,9 @@ import userRouter from "./routes/user.js"
 import {verifyFirebaseToken} from "./middleware/firebase.js";
 import { verifyApiKey } from "./middleware/api.js";
 
+import projectRouter from "./routes/project.js";
+import deploymentRouter from "./routes/deployment.js";
+
 dotenv.config();
 
 const PORT = process.env.PORT
@@ -17,6 +20,9 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
+
+app.use('/project', projectRouter);
+app.use('/deployment', deploymentRouter);
 
 app.use('user', userRouter);
 
